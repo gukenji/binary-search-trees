@@ -48,7 +48,7 @@ class Tree
                 root = root.right
             end
         end
-        previous.data > value ? previous.set_left(node) : previous.set_right(node)
+        previous.data > value ? previous.left = node : previous.right = node
     end
 
 
@@ -199,36 +199,70 @@ class Tree
         return list.max
     end     
 
+    def depth(node,root=@root,depth=0)
+        until root.class == NilClass || node.data == root.data 
+            if node.data > root.data
+                depth += 1
+                root = root.right
+            else
+                depth += 1
+                root = root.left
+            end
+        end
+        root.class != NilClass ? depth : puts("Esse node não existe na arvore.")
+    end
+
+    def balanced?
+        root = @root
+        root.left != nil ? left_height = height(root.left) : left_height = 0
+        root.right != nil ? right_height = height(root.right) : right_height = 0
+        if (left_height - right_height).abs >= 2
+            puts "Árvore desbalanceada!"
+            return false
+        else 
+            puts "Árvore Balanceada!"
+            return true
+        end
+    end
+
+    def rebalance
+        if balanced?
+            puts "Tree already balanced!"
+        else
+            new_list = level_order
+            @root = build_tree(new_list)
+        end
+
+    end
+    
 end
 
 
-array = [9,8,7,6,5,4,3,2,1,10,11,12,13]
+array = (Array.new(15) { rand(1..100) })
 tree = Tree.new(array)
 tree.pretty_print
-# p "======"
-# p ""
-# p tree
-# tree.delete(7)
-# tree.pretty_print
-# tree.delete(1)
-# tree.pretty_print
-# tree.delete(5)
-# tree.pretty_print
-# tree.delete(10)
-# tree.pretty_print
-# p tree.find(8)
-puts "LEVEL ORDER"
-p tree.level_order
-# tree.level_order {|i| print("#{i}   ")}
-puts "PREORDER"
+tree.balanced?
+puts "Preorder:"
 p tree.preorder
-# tree.preorder {|i| print("#{i}   ")}
-puts "INORDER"
-p tree.inorder
-# tree.inorder {|i| print("#{i}   ")}
-# puts ""
-puts "POSTORDER"
+puts "Postorder:"
 p tree.postorder
-# tree.postorder {|i| print("#{i}   ")}
-
-p tree.height
+puts "Inorder"
+p tree.inorder
+tree.insert(101)
+tree.insert(102)
+tree.insert(103)
+tree.insert(104)
+tree.insert(105)
+tree.insert(106)
+tree.insert(107)
+tree.pretty_print
+tree.balanced?
+tree.rebalance
+tree.pretty_print
+tree.balanced?
+puts "Preorder:"
+p tree.preorder
+puts "Postorder:"
+p tree.postorder
+puts "Inorder"
+p tree.inorder
